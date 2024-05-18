@@ -16,8 +16,9 @@ export function MarketUpdate() {
               <tr>
                 <th className="w-[60px] py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                 <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="hidden md:table-cell py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Symbol</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market</th>
                 <th className="text-right py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="text-right py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">24H Volume</th>
                 <th className="text-right hidden md:table-cell py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
               </tr>
             </thead>
@@ -25,9 +26,13 @@ export function MarketUpdate() {
               {marketData.map((item) => (
                 <tr key={item.id}>
                   <td className="py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.id}</td>
-                  <td className="py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.name}</td>
-                  <td className="hidden md:table-cell py-4 px-6 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.symbol}</td>
+                  <td className="py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    <img src={item.icon} alt={item.name} className="inline-block w-5 h-5 mr-2" />
+                    {item.name}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.market}</td>
                   <td className="text-right py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.price}</td>
+                  <td className="text-right py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.volume}</td>
                   <td className={`text-right hidden md:table-cell py-4 px-6 whitespace-nowrap text-sm font-medium ${item.change.includes("-") ? "text-red-500" : "text-green-500"}`}>{item.change}</td>
                 </tr>
               ))}
