@@ -6,17 +6,23 @@ const TradingChart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = '/charting_library/charting_library.min.js';
-    script.async = true;
-    document.body.appendChild(script);
+    const loadScript = (src: string) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    };
 
-    const datafeedScript = document.createElement('script');
-    datafeedScript.src = '/charting_library/datafeeds/udf/dist/bundle.js';
-    datafeedScript.async = true;
-    document.body.appendChild(datafeedScript);
+    const initializeChart = () => {
+      if (!(window as any).TradingView || !(window as any).Datafeeds) {
+        console.error('TradingView or Datafeeds not loaded');
+        return;
+      }
 
-    script.onload = () => {
       const widget = (window as any).TradingView.widget;
 
       new widget({
@@ -24,7 +30,7 @@ const TradingChart = () => {
         interval: 'D',
         container_id: chartContainerRef.current?.id,
         datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed('/api/TradingView'),
-        library_path: '/charting_library/',
+        library_path: '/TV/charting_library/',
         locale: 'en',
         disabled_features: ['use_localstorage_for_settings'],
         enabled_features: ['study_templates'],
@@ -38,13 +44,38 @@ const TradingChart = () => {
       });
     };
 
+    const loadScripts = async () => {
+      try {
+        await loadScript('/TV/charting_library/charting_library.js');
+        await loadScript('/TV/datafeeds/udf/dist/bundle.js');
+        initializeChart();
+      } catch (error) {
+        console.error('Failed to load TradingView scripts', error);
+      }
+    };
+
+    loadScripts();
+
     return () => {
-      document.body.removeChild(script);
-      document.body.removeChild(datafeedScript);
+      const scripts = document.querySelectorAll('script[src^="/TV/"]');
+      scripts.forEach(script => script.parentNode?.removeChild(script));
     };
   }, []);
 
-  return <div id="tv_chart_container" ref={chartContainerRef} style={{ height: '500px', width: '100%' }} />;
+  return (
+    <div
+      id="tv_chart_container"
+      ref={chartContainerRef}
+      style={{
+        height: '600px',
+        width: '100%',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+      }}
+    />
+  );
 };
 
 export default TradingChart;
