@@ -38,10 +38,12 @@ export const useCoinData = () => {
           const price24h = pairData.price_24h;
           const changePercentage = ((price24h / price) * 100).toFixed(2);
           const volume = pairData.volume.toFixed(2);
+          const coinSymbol = pair.split("-")[0].toLowerCase();
+          const iconPath = `/assets/images/coin/${coinSymbol}.png`;
 
           return {
             id: index + 1,
-            icon: `/assets/images/coins/${pair.split("-")[0].toLowerCase()}.png`, // Fetch images from local folder
+            icon: iconPath,
             name: pairData.pair_data.base.code,  // Full name of the coin
             market: pair.replace("-", "/"),  // Market (e.g., BTC/USDT)
             price: `$${price.toFixed(2)}`,  // Format price in USD
