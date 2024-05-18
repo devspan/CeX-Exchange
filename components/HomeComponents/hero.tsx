@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Candles from "@/public/assets/images/candles.png"
 
 export function Hero() {
   return (
@@ -26,7 +27,7 @@ export function Hero() {
           alt="Hero"
           className="mx-auto aspect-video overflow-hidden rounded-xl object-bottom sm:w-full lg:order-last lg:aspect-square"
           height="550"
-          src="/placeholder.svg"
+          src={Candles}
           width="550"
         />
       </div>

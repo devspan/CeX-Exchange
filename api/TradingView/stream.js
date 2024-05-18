@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import historyProvider from "./historyProvider.js";
 import { http } from "~/plugins/http";
 let sub;

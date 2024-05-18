@@ -1,7 +1,8 @@
 import React from "react";
 import { useCoinData } from "@/config/coinDataFetcher";
 import Image from 'next/image';
-import Tooltip from 'react-tooltip-lite';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css';
 
 export function MarketUpdate() {
   const marketData = useCoinData();
@@ -29,18 +30,17 @@ export function MarketUpdate() {
                 <tr key={item.id}>
                   <td className="py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.id}</td>
                   <td className="py-4 px-6 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white flex items-center">
-                    <Tooltip content={item.name}>
-                      <span>
-                        <Image
-                          src={item.icon}
-                          alt={item.name}
-                          width={20}
-                          height={20}
-                          className="inline-block w-5 h-5 mr-2"
-                          loading="lazy"
-                        />
-                      </span>
-                    </Tooltip>
+                    <span data-tooltip-id={`tooltip-${item.id}`} data-tooltip-content={item.name}>
+                      <Image
+                        src={item.icon}
+                        alt={item.name}
+                        width={20}
+                        height={20}
+                        className="inline-block w-5 h-5 mr-2"
+                        loading="lazy"
+                      />
+                    </span>
+                    <Tooltip id={`tooltip-${item.id}`} place="top" />
                     {item.name}
                   </td>
                   <td className="py-4 px-6 whitespace-nowrap text-sm text-gray-500 dark:text-white">{item.market}</td>
