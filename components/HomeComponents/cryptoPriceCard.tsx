@@ -1,22 +1,10 @@
-// CryptoPriceCard.tsx
-
 import React from "react";
-import CoinDataFetcher from "@/config/coinDataFetcher";
+import { CoinData } from "@/config/coinDataFetcher";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 
 interface CryptoPriceCardProps {
-  coinData: CoinData[] | null;
-}
-
-interface CoinData {
-  id: number;
-  icon: string;
-  name: string;
-  unit: string;
-  price: string;
-  sale: string;
-  class: string;
+  coinData: CoinData[];
 }
 
 const CryptoPriceCard: React.FC<CryptoPriceCardProps> = ({ coinData }) => {
@@ -24,8 +12,8 @@ const CryptoPriceCard: React.FC<CryptoPriceCardProps> = ({ coinData }) => {
     <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container grid items-center gap-4 px-4 md:px-6">
         <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {coinData?.map((crypto, index) => (
-            <Card key={index} className="flex items-center justify-between p-6 shadow-sm transition-all hover:shadow-md dark:border-accent dark:bg-card">
+          {coinData?.map((crypto) => (
+            <Card key={crypto.id} className="flex items-center justify-between p-6 shadow-sm transition-all hover:shadow-md dark:border-accent dark:bg-card">
               <div className="flex items-center gap-4">
                 <Avatar>
                   <AvatarImage

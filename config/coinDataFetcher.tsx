@@ -10,6 +10,7 @@ export interface CoinData {
   class: string;
   volume: string;
   change: string;
+  unit: string; // Add this line
 }
 
 export const useCoinData = () => {
@@ -51,6 +52,7 @@ export const useCoinData = () => {
             class: price24h < 0 ? "down" : "up",
             volume: volume,  // 24-hour volume
             change: `${changePercentage}%`,
+            unit: pairData.pair_data.base.code // Assuming this is the unit you want to use
           };
         });
 
