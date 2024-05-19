@@ -1,13 +1,39 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { FilterIcon, ListIcon } from "@/config/icons";
 
-const RecentTrades = () => {
-  const recentTradesData = [
-    { time: "12:34:56", type: "Buy", price: "59,700.00", amount: "0.1000" },
-    { time: "12:32:11", type: "Sell", price: "59,750.00", amount: "0.2500" },
-    { time: "12:29:45", type: "Buy", price: "59,650.00", amount: "0.0750" },
-  ];
+interface Trade {
+  time: string;
+  type: string;
+  price: string;
+  amount: string;
+}
+
+const RecentTrades: React.FC = () => {
+  const [recentTradesData, setRecentTradesData] = useState<Trade[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTrades = async () => {
+      try {
+        const response = await fetch('/api/recenttrades');
+        if (!response.ok) {
+          throw new Error('Failed to fetch recent trades');
+        }
+        const data = await response.json();
+        setRecentTradesData(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrades();
+  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow-sm dark:bg-card md:h-full mt-4">
@@ -25,14 +51,27 @@ const RecentTrades = () => {
         </div>
       </div>
       <div className="p-4 space-y-4">
-        {recentTradesData.map((trade, index) => (
-          <div key={index} className={`grid grid-cols-4 text-sm font-medium ${index % 2 === 0 ? 'text-green-500' : 'text-red-500'}`}>
-            <div>{trade.time}</div>
-            <div>{trade.type}</div>
-            <div>{trade.price}</div>
-            <div>{trade.amount}</div>
-          </div>
-        ))}
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error loading recent trades: {error}</div>
+        ) : recentTradesData.length > 0 ? (
+          recentTradesData.map((trade, index) => (
+            <div
+              key={index}
+              className={`grid grid-cols-4 text-sm font-medium ${
+                index % 2 === 0 ? 'text-green-500' : 'text-red-500'
+              }`}
+            >
+              <div>{trade.time}</div>
+              <div>{trade.type}</div>
+              <div>{trade.price}</div>
+              <div>{trade.amount}</div>
+            </div>
+          ))
+        ) : (
+          <div>No recent trades available.</div>
+        )}
       </div>
     </div>
   );
