@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from 'next-themes';
 
 const TradingChart = () => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const loadScript = (src: string) => {
@@ -40,6 +42,7 @@ const TradingChart = () => {
         user_id: 'public_user_id',
         fullscreen: false,
         autosize: true,
+        theme: theme.toLowerCase(),
         studies_overrides: {},
       });
     };
@@ -60,19 +63,20 @@ const TradingChart = () => {
       const scripts = document.querySelectorAll('script[src^="/TV/"]');
       scripts.forEach(script => script.parentNode?.removeChild(script));
     };
-  }, []);
+  }, [theme]);
 
   return (
     <div
       id="tv_chart_container"
       ref={chartContainerRef}
       style={{
-        height: '600px',
+        height: '480px', // Ensure it uses the full height of the resizable container
         width: '100%',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
+        maxWidth: '1200px', // Ensure it uses the full width of the resizable container
+        borderRadius: '4px',
         overflow: 'hidden',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        backgroundColor: theme === 'light' ? '#ffffff' : '#1c1c1c'
       }}
     />
   );

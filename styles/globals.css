@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -75,4 +73,25 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.tabs-list {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabs-trigger {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tabs-trigger.active {
+  border-bottom: 2px solid #3b82f6;
+  color: #3b82f6;
+}
+
+.tabs-content {
+  padding-top: 1rem;
 }

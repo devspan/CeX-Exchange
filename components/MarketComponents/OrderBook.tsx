@@ -11,7 +11,7 @@ interface Order {
   total: string;
 }
 
-const OrderBook = () => {
+const OrderBook: React.FC = () => {
   const [buyOrders, setBuyOrders] = useState<Order[]>([]);
   const [sellOrders, setSellOrders] = useState<Order[]>([]);
 
