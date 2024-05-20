@@ -1,12 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-import React, { useEffect, useRef } from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 
-const TradingChart = () => {
+const TradingChart = ({ symbol }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const widgetRef = useRef<any>(null);
+  const [tickerData, setTickerData] = useState<any>(null);
 
   const loadScript = (src: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -28,10 +29,10 @@ const TradingChart = () => {
     const widget = (window as any).TradingView.widget;
 
     widgetRef.current = new widget({
-      symbol: 'BTCUSD',
+      symbol,
       interval: 'D',
       container_id: chartContainerRef.current?.id,
-      datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed('/api/TradingView'),
+      datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed(`${process.env.NEXT_PUBLIC_CORE_URL}/chart`),
       library_path: '/TV/charting_library/',
       locale: 'en',
       disabled_features: ['use_localstorage_for_settings'],
@@ -44,6 +45,16 @@ const TradingChart = () => {
       autosize: true,
       theme: theme === 'dark' ? 'Dark' : 'Light',
       studies_overrides: {},
+      // Use the fetched ticker data to update the chart
+      overrides: tickerData ? {
+        'price_scale.alignment': 'right',
+        'mainSeriesProperties.candleStyle.upColor': '#4caf50',
+        'mainSeriesProperties.candleStyle.downColor': '#f44336',
+        'mainSeriesProperties.candleStyle.borderUpColor': '#4caf50',
+        'mainSeriesProperties.candleStyle.borderDownColor': '#f44336',
+        'mainSeriesProperties.candleStyle.wickUpColor': '#4caf50',
+        'mainSeriesProperties.candleStyle.wickDownColor': '#f44336',
+      } : {}
     });
   };
 
@@ -75,7 +86,23 @@ const TradingChart = () => {
       widgetRef.current.remove();
       initializeChart();
     }
-  }, [theme]);
+  }, [theme, symbol]);
+
+  useEffect(() => {
+    const fetchTickerData = async () => {
+      try {
+        const response = await fetch('https://cex.cryptodevworks.com/api/public/v1/ticker');
+        const data = await response.json();
+        if (data && data[symbol]) {
+          setTickerData(data[symbol]);
+        }
+      } catch (error) {
+        console.error('Error fetching ticker data:', error);
+      }
+    };
+
+    fetchTickerData();
+  }, [symbol]);
 
   return (
     <div
